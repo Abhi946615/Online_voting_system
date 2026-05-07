@@ -1,1 +1,362 @@
+-- online voting system project
 
+create database voting_system;
+
+-- selecting database
+use voting_system;
+
+
+-- table for admin details
+create table admin(
+
+admin_id int primary key auto_increment,
+username varchar(100),
+password varchar(100)
+
+);
+
+
+-- table for storing voter information
+create table voters(
+
+voter_id int primary key auto_increment,
+
+voter_name varchar(100),
+
+father_name varchar(100),
+
+gender varchar(20),
+
+age int,
+
+mobile varchar(15),
+
+address varchar(100),
+
+username varchar(100),
+
+password varchar(100),
+
+voted_status varchar(20) default 'No'
+
+);
+
+
+-- table for candidate details
+create table candidates(
+
+candidate_id int primary key auto_increment,
+
+candidate_name varchar(100),
+
+party_name varchar(100),
+
+symbol_name varchar(100),
+
+qualification varchar(100),
+
+total_votes int default 0
+
+);
+
+
+-- table for vote records
+create table votes(
+
+vote_id int primary key auto_increment,
+
+voter_id int,
+
+candidate_id int,
+
+vote_date timestamp default current_timestamp,
+
+foreign key(voter_id)
+references voters(voter_id),
+
+foreign key(candidate_id)
+references candidates(candidate_id)
+
+);
+
+
+-- inserting admin data
+insert into admin(username,password)
+
+values
+
+('admin','admin123');
+
+
+-- inserting voter records
+insert into voters(
+
+voter_name,
+father_name,
+gender,
+age,
+mobile,
+address,
+username,
+password
+
+)
+
+values
+
+(
+'Rohit Sharma',
+'Mahesh Sharma',
+'Male',
+20,
+'9876543210',
+'Lucknow',
+'rohit',
+'rohit123'
+),
+
+(
+'Ankit Verma',
+'Rakesh Verma',
+'Male',
+21,
+'9123456780',
+'Kanpur',
+'ankit',
+'ankit123'
+),
+
+(
+'Priya Singh',
+'Suresh Singh',
+'Female',
+22,
+'9988776655',
+'Delhi',
+'priya',
+'priya123'
+);
+
+
+-- inserting candidate records
+insert into candidates(
+
+candidate_name,
+party_name,
+symbol_name,
+qualification
+
+)
+
+values
+
+(
+'Rahul Verma',
+'ABC Party',
+'Lotus',
+'MBA'
+),
+
+(
+'Aman Singh',
+'XYZ Party',
+'Cycle',
+'B.Tech'
+),
+
+(
+'Rohit Kumar',
+'National Party',
+'Hand',
+'MCA'
+);
+
+
+-- display all voters
+select * from voters;
+
+
+-- display all candidates
+select * from candidates;
+
+
+-- first vote inserted
+insert into votes(voter_id,candidate_id)
+
+values(1,1);
+
+
+-- updating vote count
+update candidates
+
+set total_votes = total_votes + 1
+
+where candidate_id = 1;
+
+
+-- updating voter status
+update voters
+
+set voted_status = 'Yes'
+
+where voter_id = 1;
+
+
+-- second vote inserted
+insert into votes(voter_id,candidate_id)
+
+values(2,2);
+
+
+update candidates
+
+set total_votes = total_votes + 1
+
+where candidate_id = 2;
+
+
+update voters
+
+set voted_status = 'Yes'
+
+where voter_id = 2;
+
+
+-- third vote inserted
+insert into votes(voter_id,candidate_id)
+
+values(3,1);
+
+
+update candidates
+
+set total_votes = total_votes + 1
+
+where candidate_id = 1;
+
+
+update voters
+
+set voted_status = 'Yes'
+
+where voter_id = 3;
+
+
+-- displaying election result
+select
+
+candidate_name,
+party_name,
+total_votes
+
+from candidates
+
+order by total_votes desc;
+
+
+-- displaying winner
+select
+
+candidate_name,
+party_name,
+total_votes
+
+from candidates
+
+order by total_votes desc
+
+limit 1;
+
+
+-- displaying voter and candidate details
+select
+
+voters.voter_name,
+
+candidates.candidate_name,
+
+candidates.party_name
+
+from votes
+
+join voters
+
+on votes.voter_id = voters.voter_id
+
+join candidates
+
+on votes.candidate_id = candidates.candidate_id;
+
+
+-- searching voter record
+select * from voters
+
+where voter_name='Rohit Sharma';
+
+
+-- searching candidate record
+select * from candidates
+
+where candidate_name='Rahul Verma';
+
+
+-- counting total voters
+select count(*) as total_voters
+
+from voters;
+
+
+-- counting total candidates
+select count(*) as total_candidates
+
+from candidates;
+
+
+-- displaying voted users
+select * from voters
+
+where voted_status='Yes';
+
+
+-- displaying users who did not vote
+select * from voters
+
+where voted_status='No';
+
+
+-- updating candidate qualification
+update candidates
+
+set qualification='MBA Finance'
+
+where candidate_id=1;
+
+
+-- creating result view
+create view election_result as
+
+select
+
+candidate_name,
+party_name,
+total_votes
+
+from candidates;
+
+
+-- displaying result view
+select * from election_result;
+
+
+-- showing all tables
+show tables;
+
+
+-- describing table structure
+desc admin;
+
+desc voters;
+
+desc candidates;
+
+desc votes;
